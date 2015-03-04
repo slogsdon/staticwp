@@ -3,7 +3,7 @@
 Plugin Name: StaticWP
 Description: Converts your blog into a static site.
 Author: Shane Logsdon
-Version: 1.1.1
+Version: 1.2.0
 Author URI: http://www.slogsdon.com/
 License: MIT
 */
@@ -16,18 +16,19 @@ namespace StaticWP;
  * Converts your blog into a static site.
  *
  * @package static-wp
- * @version 1.1.1
+ * @version 1.2.0
  * @author  slogsdon
  */
 class StaticWP
 {
+    const VERSION          = '1.2.0';
     protected $destination = null;
-    protected $plugin = null;
+    protected $plugin      = null;
 
     public function __construct()
     {
         $this->plugin = basename(__FILE__, '.php');
-        $this->destination = WP_CONTENT_DIR . '/uploads/' . $this->plugin . '/_site';
+        $this->destination = $this->resolveDestination();
 
         if (is_admin()) {
             $this->initAdminHooks();
@@ -92,10 +93,12 @@ class StaticWP
      * Updates the static HTML for a post.
      *
      * @since 1.0.0
+     * @param int           $id
+     * @param \WP_Post|null $post
      *
      * @return null
      */
-    public function updateHtml($id, $post)
+    public function updateHtml($id, $post = null)
     {
         $permalink = get_permalink($id);
         $uri = substr($permalink, strlen(get_option('home')));
@@ -135,12 +138,12 @@ class StaticWP
               . "Plugin Name: StaticWP MU\n"
               . "Description: Converts your blog into a static site.\n"
               . "Author: Shane Logsdon\n"
-              . "Version: 1.1.1\n"
+              . 'Version: ' . self::VERSION . "\n"
               . "Author URI: http://www.slogsdon.com/\n"
               . "License: MIT\n"
               . "*/\n"
               . "\n"
-              . "require_once '" . WP_PLUGIN_DIR . '/' . $this->plugin . '/' . $this->plugin . ".php';\n";
+              . "require_once '" . plugin_dir_path(__FILE__) . $this->plugin . ".php';\n";
         file_put_contents($muPluginDir . '/' . $this->plugin . '-mu.php', $data);
     }
 
@@ -188,6 +191,27 @@ class StaticWP
             reset($objects);
             rmdir($dir);
         }
+    }
+
+    /**
+     * Recursively deletes a directory and its contents.
+     *
+     * @since 1.2.0
+     *
+     * @return string
+     */
+    protected function resolveDestination()
+    {
+        $dir = '';
+        $uploads = wp_upload_dir();
+
+        if (isset($uploads['basedir'])) {
+            $dir = $uploads['basedir'] . '/' . $this->plugin . '/_site';
+        } else {
+            $dir = WP_CONTENT_DIR . '/uploads/' . $this->plugin . '/_site';
+        }
+
+        return $dir;
     }
 }
 new StaticWP();

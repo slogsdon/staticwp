@@ -12,6 +12,12 @@ Upload the StaticWP plugin to your site, and activate it! Yep, that's it!
 
 ## Changelog
 
+### 1.2.0
+
+*Release Date - 4th March, 2015*
+
+- Improve directory resolution.
+
 ### 1.1.1
 
 *Release Date - 4th March, 2015*

@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
  * Provides helpers for loading template files
  *
  * @package static-wp
- * @version 1.2.0
+ * @version 1.3.0
  * @author  slogsdon
  */
 class StaticWPView
@@ -20,6 +20,7 @@ class StaticWPView
     /**
      * Loads notice templates.
      *
+     * @since 1.3.0
      * @param string $slug
      *
      * @return string|array
@@ -45,6 +46,7 @@ class StaticWPView
     /**
      * Loads page templates.
      *
+     * @since 1.3.0
      * @param string $slug
      *
      * @return void
@@ -57,6 +59,7 @@ class StaticWPView
     /**
      * Loads templates.
      *
+     * @since 1.3.0
      * @param string $slug
      * @param string $type
      *

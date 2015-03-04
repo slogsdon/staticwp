@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
  * Converts your blog into a static site.
  *
  * @package static-wp
- * @version 1.2.0
+ * @version 1.3.0
  * @author  slogsdon
  */
 class StaticWP

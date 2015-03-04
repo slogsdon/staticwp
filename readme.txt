@@ -18,6 +18,14 @@ Upload the StaticWP plugin to your site, and activate it! Yep, that's it!
 
 == Changelog ==
 
+= 1.3.0 =
+*Release Date - 4th March, 2015*
+
+* Refactor frontend and admin into separate classes.
+* Abstracted HTML into templates and `StaticWPView`.
+* Add admin menu pages.
+* Allow users to preload site.
+
 = 1.2.0 =
 *Release Date - 4th March, 2015*
 

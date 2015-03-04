@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * Provides admin functionality.
  *
  * @package static-wp
- * @version 1.2.0
+ * @version 1.3.0
  * @author  slogsdon
  */
 class StaticWPAdmin extends StaticWP
@@ -23,6 +23,8 @@ class StaticWPAdmin extends StaticWP
 
     /**
      * Sets up necessary bits.
+     *
+     * @since 1.3.0
      *
      * @return void
      */
@@ -78,6 +80,8 @@ class StaticWPAdmin extends StaticWP
     /**
      * Creates menu for StaticWP admin pages.
      *
+     * @since 1.3.0
+     *
      * @return void
      */
     public function addMenu()
@@ -125,6 +129,8 @@ class StaticWPAdmin extends StaticWP
     /**
      * Displays admin notices.
      *
+     * @since 1.3.0
+     *
      * @return void
      */
     public static function displayNotices()
@@ -147,6 +153,8 @@ class StaticWPAdmin extends StaticWP
 
     /**
      * Displays info page.
+     *
+     * @since 1.3.0
      *
      * @return void
      */
@@ -178,6 +186,8 @@ class StaticWPAdmin extends StaticWP
     /**
      * Displays preload page.
      *
+     * @since 1.3.0
+     *
      * @return void
      */
     public function preloadPage()
@@ -190,6 +200,8 @@ class StaticWPAdmin extends StaticWP
 
     /**
      * Handles plugin updates.
+     *
+     * @since 1.3.0
      *
      * @return void
      */
@@ -204,6 +216,8 @@ class StaticWPAdmin extends StaticWP
     /**
      * Pushes a given notice to be displayed.
      *
+     * @since 1.3.0
+     *
      * @return void
      */
     protected function addNotice($notice)
@@ -215,6 +229,8 @@ class StaticWPAdmin extends StaticWP
 
     /**
      * Loops through posts to compile static HTML for each.
+     *
+     * @since 1.3.0
      *
      * @return void
      */

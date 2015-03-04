@@ -1,4 +1,4 @@
-=== StripeWP ===
+=== StaticWP ===
 Contributors: slogsdon
 Tags: static, cache
 Requires at least: 4.1

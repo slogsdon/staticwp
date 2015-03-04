@@ -1,4 +1,4 @@
-# StripeWP
+# StaticWP
 
 Converts your blog into a static site.
 

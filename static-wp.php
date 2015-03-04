@@ -5,6 +5,7 @@ Description: Converts your blog into a static site.
 Author: Shane Logsdon
 Version: 1.0.0
 Author URI: http://www.slogsdon.com/
+License: MIT
 */
 
 namespace StaticWP;
@@ -117,6 +118,7 @@ class StaticWP
               . "Author: Shane Logsdon\n"
               . "Version: 1.0.0\n"
               . "Author URI: http://www.slogsdon.com/\n"
+              . "License: MIT\n"
               . "*/\n"
               . "\n"
               . "require_once '" . WP_PLUGIN_DIR . '/' . $plugin . '/' . $plugin . "-mu.php';\n";

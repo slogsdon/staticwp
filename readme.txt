@@ -3,7 +3,7 @@ Contributors: slogsdon
 Tags: static, cache
 Requires at least: 4.1
 Tested up to: 4.1
-Stable tag: 1.1.0
+Stable tag: trunk
 License: MIT
 
 Converts your blog into a static site.

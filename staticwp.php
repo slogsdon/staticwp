@@ -3,7 +3,7 @@
 Plugin Name: StaticWP
 Description: Converts your blog into a static site.
 Author: Shane Logsdon
-Version: 1.1.0
+Version: 1.1.1
 Author URI: http://www.slogsdon.com/
 License: MIT
 */
@@ -16,7 +16,7 @@ namespace StaticWP;
  * Converts your blog into a static site.
  *
  * @package static-wp
- * @version 1.1.0
+ * @version 1.1.1
  * @author  slogsdon
  */
 class StaticWP
@@ -135,7 +135,7 @@ class StaticWP
               . "Plugin Name: StaticWP MU\n"
               . "Description: Converts your blog into a static site.\n"
               . "Author: Shane Logsdon\n"
-              . "Version: 1.1.0\n"
+              . "Version: 1.1.1\n"
               . "Author URI: http://www.slogsdon.com/\n"
               . "License: MIT\n"
               . "*/\n"

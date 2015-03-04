@@ -18,6 +18,11 @@ Upload the StaticWP plugin to your site, and activate it! Yep, that's it!
 
 == Changelog ==
 
+= 1.1.1 =
+*Release Date - 4th March, 2015*
+
+* Fix bug with plugin name.
+
 = 1.1.0 =
 *Release Date - 3rd March, 2015*
 

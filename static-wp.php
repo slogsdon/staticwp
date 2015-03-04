@@ -3,7 +3,7 @@
 Plugin Name: StaticWP
 Description: Converts your blog into a static site.
 Author: Shane Logsdon
-Version: 1.0.0
+Version: 1.1.0
 Author URI: http://www.slogsdon.com/
 License: MIT
 */
@@ -16,13 +16,19 @@ namespace StaticWP;
  * Converts your blog into a static site.
  *
  * @package static-wp
- * @version 1.0.0
+ * @version 1.1.0
  * @author  slogsdon
  */
 class StaticWP
 {
+    protected $destination = null;
+    protected $plugin = null;
+
     public function __construct()
     {
+        $this->plugin = basename(__FILE__, '.php');
+        $this->destination = WP_CONTENT_DIR . '/uploads/' . $this->plugin . '/_site';
+
         if (is_admin()) {
             $this->initAdminHooks();
         } else {
@@ -33,6 +39,8 @@ class StaticWP
     /**
      * Hooks on to necessary actions/filters for the
      * business end of the plugin.
+     *
+     * @since 1.0.0
      *
      * @return null
      */
@@ -45,11 +53,15 @@ class StaticWP
      * Hooks on to necessary actions/filters for the
      * administration end of the plugin.
      *
+     * @since 1.0.0
+     *
      * @return null
      */
     public function initAdminHooks()
     {
         register_activation_hook(__FILE__, array($this , 'activate'));
+        register_deactivation_hook(__FILE__, array($this, 'deactivate'));
+        register_uninstall_hook(__FILE__, array(__CLASS__, 'deactivate'));
         add_action('publish_post', array($this, 'updateHtml'), 10, 2);
     }
 
@@ -57,6 +69,8 @@ class StaticWP
      * Upon initial activation, the plugin moves itself to
      * mu-plugins to take advantage of the muplugins_loaded
      * hook.
+     *
+     * @since 1.0.0
      *
      * @return null
      */
@@ -67,22 +81,26 @@ class StaticWP
             return;
         }
 
-        $plugin = basename(__FILE__, '.php');
-
         $file = $_SERVER['REQUEST_URI'] . 'index.html';
-        if (is_file(WP_PLUGIN_DIR . '/' . $plugin . '/_site' . $file)) {
-            echo file_get_contents(WP_PLUGIN_DIR . '/' . $plugin . '/_site' . $file);
+        if (is_file($this->destination . $file)) {
+            echo file_get_contents($this->destination . $file);
             exit();
         }
     }
 
+    /**
+     * Updates the static HTML for a post.
+     *
+     * @since 1.0.0
+     *
+     * @return null
+     */
     public function updateHtml($id, $post)
     {
-        $plugin = basename(__FILE__, '.php');
         $permalink = get_permalink($id);
         $uri = substr($permalink, strlen(get_option('home')));
         $data = file_get_contents($permalink);
-        $filename = WP_PLUGIN_DIR . '/' . $plugin . '/_site' . $uri . 'index.html';
+        $filename = $this->destination . $uri . 'index.html';
         if (!is_dir(dirname($filename))) {
             mkdir(dirname($filename), 0775, true);
         }
@@ -95,20 +113,21 @@ class StaticWP
      * of the muplugins_loaded hook. It leaves support files
      * in their original location (plugins folder).
      *
+     * @since 1.0.0
+     *
      * @return null
      */
     public function activate()
     {
         $muPluginDir = WP_CONTENT_DIR . '/mu-plugins';
-        $plugin = basename(__FILE__, '.php');
-        $muPluginFile = $plugin . '/mu.php';
+        $muPluginFile = $this->plugin . '/mu.php';
 
         if (!is_dir($muPluginDir)) {
             mkdir($muPluginDir, 0775);
         }
 
-        if (!is_dir(WP_PLUGIN_DIR . '/' . $plugin . '/_site')) {
-            mkdir(WP_PLUGIN_DIR . '/' . $plugin . '/_site', 0775);
+        if (!is_dir($this->destination)) {
+            mkdir($this->destination, 0775, true);
         }
 
         $data = "<?php\n"
@@ -116,13 +135,59 @@ class StaticWP
               . "Plugin Name: StaticWP MU\n"
               . "Description: Converts your blog into a static site.\n"
               . "Author: Shane Logsdon\n"
-              . "Version: 1.0.0\n"
+              . "Version: 1.1.0\n"
               . "Author URI: http://www.slogsdon.com/\n"
               . "License: MIT\n"
               . "*/\n"
               . "\n"
-              . "require_once '" . WP_PLUGIN_DIR . '/' . $plugin . '/' . $plugin . "-mu.php';\n";
-        file_put_contents($muPluginDir . '/' . $plugin . '.php', $data);
+              . "require_once '" . WP_PLUGIN_DIR . '/' . $this->plugin . '/' . $this->plugin . ".php';\n";
+        file_put_contents($muPluginDir . '/' . $this->plugin . '-mu.php', $data);
+    }
+
+    /**
+     * Cleans up after itself on deactivation.
+     *
+     * @since 1.1.0
+     *
+     * @return null
+     */
+    public function deactivate()
+    {
+        $muPluginFile = WP_CONTENT_DIR . '/mu-plugins/' . $this->plugin . '-mu.php';
+
+        if (is_file($muPluginFile)) {
+            unlink($muPluginFile);
+        }
+
+        if (is_dir($this->destination)) {
+            $this->rrmdir(dirname($this->destination));
+        }
+    }
+
+    /**
+     * Recursively deletes a directory and its contents.
+     *
+     * @since 1.1.0
+     * @param string $dir
+     *
+     * @return null
+     */
+    protected function rrmdir($dir)
+    {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+                    if (filetype($dir."/".$object) == "dir") {
+                        $this->rrmdir($dir."/".$object);
+                    } else {
+                        unlink($dir."/".$object);
+                    }
+                }
+            }
+            reset($objects);
+            rmdir($dir);
+        }
     }
 }
 new StaticWP();

@@ -1,4 +1,4 @@
-<div class="wrap" id="static-wp-preload">
+<div class="wrap" id="staticwp-preload">
   <h2>StaticWP Preload</h2>
 
   <h3>What's "preload" mean?</h3>
@@ -9,8 +9,10 @@
   </p>
   
   <form action="" method="post">
-    <!-- nonce -->
+    <input type="hidden" name="action" value="preload" />
+    <?php wp_nonce_field('staticwp'); ?>
+
     <p>Start preloading?</p>
-    <input type="submit" id="static-wp-preload-submit" name="static-wp-preload-submit" value="Go for it!" class="button action" />
+    <input type="submit" value="Go for it!" class="button action" />
   </form>
 </div>

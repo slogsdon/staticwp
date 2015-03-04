@@ -2,6 +2,7 @@
 
 namespace StaticWP;
 
+use \Exception;
 use \WP_Query;
 
 if (!defined('ABSPATH')) {
@@ -152,6 +153,38 @@ class StaticWPAdmin extends StaticWP
     }
 
     /**
+     * @param int    $num
+     * @param string $mes
+     * @param string $file
+     * @param int    $line
+     * @param array  $context
+     *
+     * @return bool
+     */
+    public function errorToException($num, $mes, $file = null, $line = null, $context = null)
+    {
+        throw new Exception($mes, $num);
+    }
+
+    public function handlePost()
+    {
+        if (!isset($_POST['action'])) {
+            return;
+        }
+        if (!check_admin_referer('staticwp')) {
+            return;
+        }
+
+        switch ($_POST['action']) {
+            case 'preload':
+                $this->preload();
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
      * Displays info page.
      *
      * @since 1.3.0
@@ -178,6 +211,7 @@ class StaticWPAdmin extends StaticWP
         register_uninstall_hook($this->file, array(__CLASS__, 'deactivate'));
 
         add_action('publish_post', array($this, 'updateHtml'), 10, 2);
+        add_action('admin_init', array($this, 'handlePost'));
         add_action('admin_init', array($this, 'update'));
         add_action('admin_menu', array($this, 'addMenu'));
         add_action('admin_notices', array(__CLASS__, 'displayNotices'));
@@ -192,9 +226,6 @@ class StaticWPAdmin extends StaticWP
      */
     public function preloadPage()
     {
-        if (isset($_POST['static-wp-preload-submit'])) {
-            $this->preload();
-        }
         StaticWPView::page('admin/preload');
     }
 
@@ -236,21 +267,31 @@ class StaticWPAdmin extends StaticWP
      */
     protected function preload()
     {
-        $args = array(
-            'orderby'          => 'post_date',
-            'order'            => 'DESC',
-            'post_status'      => 'publish',
-            'suppress_filters' => true,
-        );
-        $query = new WP_Query($args);
+        set_error_handler(array(__CLASS__, 'errorToException'), E_ALL);
+        try {
+            $args = array(
+                'orderby'          => 'post_date',
+                'order'            => 'DESC',
+                'post_status'      => 'publish',
+                'suppress_filters' => true,
+            );
+            $query = new WP_Query($args);
 
-        if ($query->have_posts()) {
-            foreach ($query->posts as $post) {
-                $this->updateHtml($post->ID);
+            if ($query->have_posts()) {
+                foreach ($query->posts as $post) {
+                    $this->updateHtml($post->ID);
+                }
             }
+
+            $this->addNotice(StaticWPView::notice('admin/preload-success'));
+        } catch (Exception $e) {
+            $this->addNotice(StaticWPView::notice('admin/preload-error', 'error'));
         }
 
+        restore_error_handler();
         wp_reset_postdata();
+        wp_safe_redirect(admin_url('admin.php?page=' . $this->plugin . '-preload'));
+        exit();
     }
 
     /**

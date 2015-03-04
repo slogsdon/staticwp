@@ -33,7 +33,7 @@ class StaticWP
      *
      * @since 1.0.0
      *
-     * @return null
+     * @return void
      */
     public function initHooks()
     {
@@ -45,7 +45,7 @@ class StaticWP
      *
      * @since 1.0.0
      *
-     * @return null
+     * @return void
      */
     public function load()
     {
@@ -68,7 +68,7 @@ class StaticWP
      * @param int           $id
      * @param \WP_Post|null $post
      *
-     * @return null
+     * @return void
      */
     public function updateHtml($id, $post = null)
     {
@@ -76,8 +76,10 @@ class StaticWP
         $uri = substr($permalink, strlen(get_option('home')));
         $data = file_get_contents($permalink);
         $filename = $this->destination . $uri . 'index.html';
-        if (!is_dir(dirname($filename))) {
-            mkdir(dirname($filename), 0775, true);
+        $dir = $this->destination . $uri;
+
+        if (!is_dir($dir)) {
+            wp_mkdir_p($dir);
         }
         file_put_contents($filename, $data);
     }

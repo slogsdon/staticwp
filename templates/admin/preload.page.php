@@ -11,6 +11,6 @@
   <form action="" method="post">
     <!-- nonce -->
     <p>Start preloading?</p>
-    <input type="submit" id="static-wp-preload-submit" value="Go for it!" class="button action" />
+    <input type="submit" id="static-wp-preload-submit" name="static-wp-preload-submit" value="Go for it!" class="button action" />
   </form>
 </div>

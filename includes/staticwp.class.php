@@ -20,11 +20,38 @@ class StaticWP
     protected $destination = null;
     protected $plugin      = null;
 
+    /**
+     * Sets up necessary bits.
+     *
+     * @since 1.3.0
+     *
+     * @return void
+     */
     public function __construct($plugin)
     {
         $this->plugin = $plugin;
         $this->destination = $this->resolveDestination();
         $this->initHooks();
+    }
+
+    /**
+     * Updates static HTML after an approved comment is added.
+     *
+     * @param int $id
+     * @param int @status
+     *
+     * @return void
+     */
+    public function addComment($id, $status)
+    {
+        if ($status == 0) {
+            return;
+        }
+
+        $comment = get_comment($id);
+        $this->updateHtml($comment->comment_post_ID);
+        wp_safe_redirect(get_permalink($comment->comment_post_ID));
+        exit();
     }
 
     /**
@@ -38,6 +65,7 @@ class StaticWP
     public function initHooks()
     {
         add_action('muplugins_loaded', array($this, 'load'), 0);
+        add_action('comment_post', array($this, 'addComment'), 10, 2);
     }
 
     /**
@@ -78,13 +106,15 @@ class StaticWP
 
         $permalink = get_permalink($id);
         $uri = substr($permalink, strlen(get_option('home')));
-        $data = file_get_contents($permalink);
         $filename = $this->destination . $uri . 'index.html';
         $dir = $this->destination . $uri;
 
         if (!is_dir($dir)) {
             wp_mkdir_p($dir);
         }
+
+        unlink($filename);
+        $data = file_get_contents($permalink);
         file_put_contents($filename, $data);
     }
 

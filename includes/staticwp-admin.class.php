@@ -153,6 +153,9 @@ class StaticWPAdmin extends StaticWP
     }
 
     /**
+     * Error handler to convert errors to exceptions to make it
+     * easier to catch them.
+     *
      * @param int    $num
      * @param string $mes
      * @param string $file
@@ -166,6 +169,11 @@ class StaticWPAdmin extends StaticWP
         throw new Exception($mes, $num);
     }
 
+    /**
+     * Handles form submission on StaticWP admin pages.
+     *
+     * @return void
+     */
     public function handlePost()
     {
         if (!isset($_POST['staticwp-action'])) {

@@ -9,7 +9,7 @@
   </p>
   
   <form action="" method="post">
-    <input type="hidden" name="action" value="preload" />
+    <input type="hidden" name="staticwp-action" value="preload" />
     <?php wp_nonce_field('staticwp'); ?>
 
     <p>Start preloading?</p>

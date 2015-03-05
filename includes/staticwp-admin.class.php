@@ -168,7 +168,7 @@ class StaticWPAdmin extends StaticWP
 
     public function handlePost()
     {
-        if (!isset($_POST['action'])) {
+        if (!isset($_POST['staticwp-action'])) {
             return;
         }
         if (!check_admin_referer('staticwp')) {
@@ -210,7 +210,7 @@ class StaticWPAdmin extends StaticWP
         register_deactivation_hook($this->file, array($this, 'deactivate'));
         register_uninstall_hook($this->file, array(__CLASS__, 'deactivate'));
 
-        add_action('publish_post', array($this, 'updateHtml'), 10, 2);
+        add_action('save_post', array($this, 'updateHtml'), 10, 2);
         add_action('admin_init', array($this, 'handlePost'));
         add_action('admin_init', array($this, 'update'));
         add_action('admin_menu', array($this, 'addMenu'));

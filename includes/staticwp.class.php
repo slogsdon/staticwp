@@ -72,6 +72,10 @@ class StaticWP
      */
     public function updateHtml($id, $post = null)
     {
+        if ($post != null && $post->post_status != 'publish') {
+            return;
+        }
+
         $permalink = get_permalink($id);
         $uri = substr($permalink, strlen(get_option('home')));
         $data = file_get_contents($permalink);

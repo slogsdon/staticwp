@@ -51,7 +51,7 @@ class StaticWPAdmin extends StaticWP
         $muPluginDir = WP_CONTENT_DIR . '/mu-plugins';
 
         if (!is_dir($muPluginDir)) {
-            wp_mkdir($muPluginDir);
+            wp_mkdir_p($muPluginDir);
         }
 
         if (!is_dir($this->destination)) {

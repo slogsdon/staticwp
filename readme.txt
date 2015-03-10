@@ -18,6 +18,11 @@ Upload the StaticWP plugin to your site, and activate it! Yep, that's it!
 
 == Changelog ==
 
+= 1.4.1 =
+*Release Date - 9th March, 2015*
+
+* Fix misuse of `wp_mkdir`.
+
 = 1.4.0 =
 *Release Date - 4th March, 2015*
 

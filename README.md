@@ -12,6 +12,13 @@ Upload the StaticWP plugin to your site, and activate it! Yep, that's it!
 
 ## Changelog
 
+### 1.4.2
+
+*In progress*
+
+- Fix issue with preload.
+- Fix issue with uninstall.
+
 ### 1.4.1
 
 *Release Date - 9th March, 2015*

@@ -217,7 +217,6 @@ class StaticWPAdmin extends StaticWP
     {
         register_activation_hook($this->file, array($this , 'activate'));
         register_deactivation_hook($this->file, array($this, 'deactivate'));
-        register_uninstall_hook($this->file, array(__CLASS__, 'deactivate'));
 
         add_action('save_post', array($this, 'updateHtml'), 10, 2);
         add_action('admin_init', array($this, 'handlePost'));

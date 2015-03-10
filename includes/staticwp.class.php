@@ -113,7 +113,9 @@ class StaticWP
             wp_mkdir_p($dir);
         }
 
-        unlink($filename);
+        if (is_file($filename)) {
+            unlink($filename);
+        }
         $data = file_get_contents($permalink);
         file_put_contents($filename, $data);
     }

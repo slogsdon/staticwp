@@ -165,7 +165,7 @@ class StaticWPAdmin extends StaticWP
      *
      * @return bool
      */
-    public function errorToException($num, $mes, $file = null, $line = null, $context = null)
+    public static function errorToException($num, $mes, $file = null, $line = null, $context = null)
     {
         throw new Exception($mes, $num);
     }
@@ -184,7 +184,7 @@ class StaticWPAdmin extends StaticWP
             return;
         }
 
-        switch ($_POST['action']) {
+        switch ($_POST['staticwp-action']) {
             case 'preload':
                 $this->preload();
                 break;
@@ -294,6 +294,7 @@ class StaticWPAdmin extends StaticWP
 
             $this->addNotice(StaticWPView::notice('admin/preload-success'));
         } catch (Exception $e) {
+            print $e->getMessage();die();
             $this->addNotice(StaticWPView::notice('admin/preload-error', 'error'));
         }
 

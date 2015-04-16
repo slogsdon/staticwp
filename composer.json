@@ -1,0 +1,9 @@
+{
+    "name": "slogsdon/staticwp",
+    "description": "Converts your WordPress blog into a static site",
+    "license": "MIT",
+    "type": "wordpress-plugin",
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}

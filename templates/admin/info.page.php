@@ -1,5 +1,9 @@
-<div class="wrap" id="static-wp">
+<div class="wrap" id="staticwp">
   <h2>StaticWP</h2>
+
+  <nav>
+    <?php \StaticWP\View::template('admin/menu', 'include'); ?>
+  </nav>
   
   <p>
     Have performance issues? StaticWP converts your

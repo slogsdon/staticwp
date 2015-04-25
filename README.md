@@ -75,4 +75,4 @@ Upload the StaticWP plugin to your site, and activate it! Yep, that's it!
 
 StaticWP is released under the MIT License.
 
-See [LICENSE](https://github.com/slogsdon/static-wp/blob/master/LICENSE) for details.
+See [LICENSE](https://github.com/slogsdon/staticwp/blob/master/LICENSE) for details.

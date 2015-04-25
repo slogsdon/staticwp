@@ -7,15 +7,15 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * StaticWPView class
+ * View class
  *
  * Provides helpers for loading template files
  *
- * @package static-wp
- * @version 1.3.0
+ * @package staticwp
+ * @version 1.4.2
  * @author  slogsdon
  */
-class StaticWPView
+class View
 {
     /**
      * Loads notice templates.

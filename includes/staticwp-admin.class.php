@@ -10,16 +10,17 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * StaticWPAdmin Plugin class
+ * Admin Plugin class
  *
  * Provides admin functionality.
  *
- * @package static-wp
- * @version 1.3.0
+ * @package staticwp
+ * @version 1.4.2
  * @author  slogsdon
  */
-class StaticWPAdmin extends StaticWP
+class Admin extends StaticWP
 {
+    const DEFAULT_SUB_PAGE = 'info';
     protected $file = null;
 
     /**
@@ -72,9 +73,9 @@ class StaticWPAdmin extends StaticWP
               . "require_once '" . plugin_dir_path($this->file) . $this->plugin . ".php';\n";
         file_put_contents($muPluginDir . '/' . $this->plugin . '-mu.php', $data);
 
-        // Can't use StaticWPView::page :(
+        // Can't use View::page :(
         $notice = 'Thanks for installing StaticWP! Might we suggest <a href="'
-                . admin_url('admin.php?page=staticwp-preload')
+                . self::url('preload')
                 . '">preloading your site</a>?';
         $this->addNotice($notice);
     }
@@ -88,20 +89,13 @@ class StaticWPAdmin extends StaticWP
      */
     public function addMenu()
     {
-        add_menu_page(
-            __('StaticWP', $this->plugin),
-            __('StaticWP', $this->plugin),
-            'manage_options',
-            $this->plugin,
-            array($this, 'InfoPage')
-        );
         add_submenu_page(
-            $this->plugin,
-            __('StaticWP Preload', $this->plugin),
-            __('Preload', $this->plugin),
+            'tools.php',
+            __('StaticWP', $this->plugin),
+            __('StaticWP', $this->plugin),
             'manage_options',
-            $this->plugin . '-preload',
-            array($this, 'PreloadPage')
+            $this->plugin,
+            array($this, 'viewPage')
         );
     }
 
@@ -124,7 +118,7 @@ class StaticWPAdmin extends StaticWP
             $this->rrmdir(dirname($this->destination));
         }
 
-        delete_option('staticwp_version');
+        delete_option($this->plugin . 'version');
         delete_option('staticwp_deferred_admin_notices');
     }
 
@@ -186,23 +180,25 @@ class StaticWPAdmin extends StaticWP
 
         switch ($_POST['staticwp-action']) {
             case 'preload':
-                $this->preload();
+                set_error_handler(array(__CLASS__, 'errorToException'), E_ALL);
+                try {
+                    $types = array('post', 'page');
+                    foreach ($types as $type) {
+                      $this->preload($type);
+                    }
+                    $this->addNotice(View::notice('admin/preload-success'));
+                } catch (Exception $e) {
+                    $this->addNotice(View::notice('admin/preload-error', 'error'));
+                }
+
+                restore_error_handler();
+                wp_reset_postdata();
+                wp_safe_redirect(self::url('preload'));
+                exit();
                 break;
             default:
                 break;
         }
-    }
-
-    /**
-     * Displays info page.
-     *
-     * @since 1.3.0
-     *
-     * @return void
-     */
-    public function infoPage()
-    {
-        StaticWPView::page('admin/info');
     }
 
     /**
@@ -226,18 +222,6 @@ class StaticWPAdmin extends StaticWP
     }
 
     /**
-     * Displays preload page.
-     *
-     * @since 1.3.0
-     *
-     * @return void
-     */
-    public function preloadPage()
-    {
-        StaticWPView::page('admin/preload');
-    }
-
-    /**
      * Handles plugin updates.
      *
      * @since 1.3.0
@@ -246,10 +230,38 @@ class StaticWPAdmin extends StaticWP
      */
     public function update()
     {
-        $version = get_option('staticwp_version');
+        $version = get_option($this->plugin . 'version');
         if ($version != STATICWP_VERSION) {
-            update_option('staticwp_version', STATICWP_VERSION);
+            update_option($this->plugin . 'version', STATICWP_VERSION);
         }
+    }
+
+    /**
+     * Creates an admin_url to a StaticWP subpage.
+     *
+     * @since 1.4.2
+     *
+     * @param string $subpage
+     *
+     * @return string
+     */
+    public static function url($subpage)
+    {
+        return admin_url('tools.php?page=staticwp'
+          . (!empty($subpage) ? '&sub=' . $subpage : ''));
+    }
+
+    /**
+     * Displays a page.
+     *
+     * @since 1.4.2
+     *
+     * @return void
+     */
+    public function viewPage()
+    {
+        $page = isset($_GET['sub']) ? (string)$_GET['sub'] : self::DEFAULT_SUB_PAGE;
+        View::page('admin/' . $page);
     }
 
     /**
@@ -273,34 +285,24 @@ class StaticWPAdmin extends StaticWP
      *
      * @return void
      */
-    protected function preload()
+    protected function preload($post_type = 'post')
     {
-        set_error_handler(array(__CLASS__, 'errorToException'), E_ALL);
-        try {
-            $args = array(
-                'orderby'          => 'post_date',
-                'order'            => 'DESC',
-                'post_status'      => 'publish',
-                'suppress_filters' => true,
-            );
-            $query = new WP_Query($args);
+        $args = array(
+            'fields'           => 'ids',
+            'orderby'          => 'post_date',
+            'order'            => 'DESC',
+            'post_status'      => 'publish',
+            'post_type'        => $post_type,
+            'showposts'        => -1,
+            'suppress_filters' => true,
+        );
+        $query = new WP_Query($args);
 
-            if ($query->have_posts()) {
-                foreach ($query->posts as $post) {
-                    $this->updateHtml($post->ID);
-                }
+        if ($query->have_posts()) {
+            foreach ($query->posts as $post_id) {
+                $this->updateHtml($post_id);
             }
-
-            $this->addNotice(StaticWPView::notice('admin/preload-success'));
-        } catch (Exception $e) {
-            print $e->getMessage();die();
-            $this->addNotice(StaticWPView::notice('admin/preload-error', 'error'));
         }
-
-        restore_error_handler();
-        wp_reset_postdata();
-        wp_safe_redirect(admin_url('admin.php?page=' . $this->plugin . '-preload'));
-        exit();
     }
 
     /**

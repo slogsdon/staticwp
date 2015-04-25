@@ -11,8 +11,8 @@ if (!defined('ABSPATH')) {
  *
  * Converts your blog into a static site.
  *
- * @package static-wp
- * @version 1.3.0
+ * @package staticwp
+ * @version 1.4.2
  * @author  slogsdon
  */
 class StaticWP
@@ -116,7 +116,18 @@ class StaticWP
         if (is_file($filename)) {
             unlink($filename);
         }
-        $data = file_get_contents($permalink);
+
+        $curl = curl_init($permalink);
+
+        curl_setopt($curl, CURLOPT_HEADER,         false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        $data = null;
+        if (($data = curl_exec($curl)) === false) {
+            throw new Exception(sprintf('Curl error: %s', curl_error($curl)));
+        }
+
+        curl_close($curl);
         file_put_contents($filename, $data);
     }
 

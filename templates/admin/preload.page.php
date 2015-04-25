@@ -1,6 +1,10 @@
 <div class="wrap" id="staticwp-preload">
   <h2>StaticWP Preload</h2>
 
+  <nav>
+    <?php \StaticWP\View::template('admin/menu', 'include'); ?>
+  </nav>
+
   <h3>What's "preload" mean?</h3>
   <p>
     Preloading is way for StaticWP to generate static HTML for all of your 

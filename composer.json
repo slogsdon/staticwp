@@ -1,0 +1,19 @@
+{
+    "name": "slogsdon/staticwp",
+    "description": "Converts your WordPress blog into a static site",
+    "keywords": ["wp","wordpress", "static", "cache"],
+    "homepage": "https://github.com/slogsdon/staticwp",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Shane Logsdon",
+            "email": "shane@shanelogsdon.com",
+            "homepage": "http://www.slogsdon.com",
+            "role": "Developer"
+        }
+    ],
+    "type": "wordpress-plugin",
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}

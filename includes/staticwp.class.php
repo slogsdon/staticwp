@@ -2,6 +2,8 @@
 
 namespace StaticWP;
 
+use \Exception;
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -84,8 +86,13 @@ class StaticWP
 
         $file = $_SERVER['REQUEST_URI'] . 'index.html';
         if (is_file($this->destination . $file)) {
-            echo file_get_contents($this->destination . $file);
+            $contents = file_get_contents($this->destination . $file);
+            do_action('staticwp_pre_cache_hit', $_SERVER['REQUEST_URI']);
+            echo apply_filters('staticwp_cache_hit_contents', $contents);
+            do_action('staticwp_post_cache_hit', $_SERVER['REQUEST_URI']);
             exit();
+        } else {
+            do_action('staticwp_cache_miss', $_SERVER['REQUEST_URI']);
         }
     }
 
@@ -128,7 +135,9 @@ class StaticWP
         }
 
         curl_close($curl);
-        file_put_contents($filename, $data);
+        do_action('staticwp_pre_cache_update', $id);
+        file_put_contents($filename, apply_filters('staticwp_cache_update_contents', $data, $id));
+        do_action('staticwp_post_cache_update', $id);
     }
 
     /**
@@ -149,6 +158,6 @@ class StaticWP
             $dir = WP_CONTENT_DIR . '/uploads/' . $this->plugin . '/_site';
         }
 
-        return $dir;
+        return apply_filters('staticwp_cache_destination', $dir);
     }
 }

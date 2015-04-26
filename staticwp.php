@@ -3,7 +3,7 @@
 Plugin Name: StaticWP
 Description: Converts your blog into a static site.
 Author: Shane Logsdon
-Version: 1.4.2
+Version: 1.5.0
 Author URI: http://www.slogsdon.com/
 License: MIT
 */
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!defined('STATICWP_VERSION')) {
-    define('STATICWP_VERSION', '1.4.2');
+    define('STATICWP_VERSION', '1.5.0');
 }
 
 // Support

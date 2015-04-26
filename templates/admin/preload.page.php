@@ -3,6 +3,8 @@
 
   <nav>
     <?php \StaticWP\View::template('admin/menu', 'include'); ?>
+    <br />
+    <br />
   </nav>
 
   <h3>What's "preload" mean?</h3>

@@ -182,7 +182,7 @@ class Admin extends StaticWP
             case 'preload':
                 set_error_handler(array(__CLASS__, 'errorToException'), E_ALL);
                 try {
-                    $types = array('post', 'page');
+                    $types = apply_filters('staticwp_preload_post_types', array('post', 'page'));
                     foreach ($types as $type) {
                       $this->preload($type);
                     }
@@ -299,7 +299,8 @@ class Admin extends StaticWP
         $query = new WP_Query($args);
 
         if ($query->have_posts()) {
-            foreach ($query->posts as $post_id) {
+            $posts = apply_filters('staticwp_preload_' . $post_type . '_posts', $query->posts);
+            foreach ($posts as $post_id) {
                 $this->updateHtml($post_id);
             }
         }

@@ -16,10 +16,20 @@ Have performance issues? StaticWP converts your blog into a static site, so you 
 
 Upload the StaticWP plugin to your site, and activate it! Yep, that's it!
 
+Optionally, you can set your web server to look in the storage directory (default is `staticwp/_site/`
+in your uploads directory) for files prior to letting Wordpress take over control.
+
 == Changelog ==
 
+= 1.5.0 =
+*Release Date - 25th April, 2015*
+
+* Add actions.
+* Add filters.
+* Fix bug with `StaticWP\StaticWP` not qualifying `Exception` before its use.
+
 = 1.4.2 =
-*In progress*
+*Release Date - 25th April, 2015*
 
 * Fix issue with preload.
 * Fix issue with uninstall.
